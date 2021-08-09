@@ -10,7 +10,7 @@ def split_text(limite, texto):
     linha = ''
     for palavra in texto.split(' '):
         if len(palavra) + len(linha) < limite-1:
-            linha = f"{linha} {palavra}".strip()
+            linha = f"{linha}{palavra} "
         else:
             texto_completo.append(linha)
             linha = palavra
@@ -40,4 +40,3 @@ def create_image(pessoa, foto, resumo, palestra):
 
     arte.save(file_name)
 
-create_image('Marco Rougeth', '/tmp/rougeth.jpg', 'Resumo da pessoa', 'Título Palestra')
