@@ -7,13 +7,16 @@ from PIL import Image, ImageDraw, ImageFont
 def create(person_name, cert_date):
 
     logging.info(f"Creating Certicate to {person_name}")
-    font_cert = ImageFont.truetype("assets/fonts/VT323-Regular.ttf", 38)
+    font_cert = ImageFont.truetype("assets/fonts/VT323-Regular.ttf", 80)
+    font_date = ImageFont.truetype("assets/fonts/VT323-Regular.ttf", 40)
     certificate_imgs = Image.open("assets/imgs/certificate.png")
 
     draw = ImageDraw.Draw(certificate_imgs)
 
-    draw.text((30, 700), cert_date, ("#ffffff"), font=font_cert)
-    draw.text((300, 450), person_name, ("#ffffff"), font=font_cert, spacing=10)
+    if len(person_name)>28:
+       person_name= f"{person_name.split()[0]} {person_name.split()[-1]}"
+    draw.text((0, 450), person_name.center(33), ("#ffffff"), font=font_cert, spacing=10)
+    draw.text((150, 700), cert_date, ("#ffffff"), font=font_date)
 
     os.makedirs("certificates", exist_ok=True)
 
