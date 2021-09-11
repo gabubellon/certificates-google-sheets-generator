@@ -1,12 +1,12 @@
-import logging
 import os
 
+from loguru import logger
 from PIL import Image, ImageDraw, ImageFont
 
 
 def create(person_name, cert_date):
 
-    logging.info(f"Creating Certicate to {person_name}")
+    logger.info(f"Creating Certicate to {person_name}")
     font_cert = ImageFont.truetype("assets/fonts/VT323-Regular.ttf", 80)
     font_date = ImageFont.truetype("assets/fonts/VT323-Regular.ttf", 40)
     certificate_imgs = Image.open("assets/imgs/certificate.png")

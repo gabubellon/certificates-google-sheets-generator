@@ -1,15 +1,13 @@
-import logging
 import sys
+
+from loguru import logger
 
 import certificates
 import google_api
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.INFO)
-
 
 def create_certificate(certificate_date):
-    logging.info(f"Getting data to certificates")
+    logger.info(f"Getting data to certificates")
     values = google_api.read_sheets()
     cert_lists = []
 
