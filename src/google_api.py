@@ -96,6 +96,7 @@ def save_file_drive(file_path):
     response_share_link = (
         service.files().get(fileId=file.get("id"), fields="webViewLink").execute()
     )
-
+    
+    os.remove(file_path)
     logger.info("Returning File Link")
     return response_share_link.get("webViewLink")
