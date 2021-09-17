@@ -1,5 +1,6 @@
 import sys
 
+import toml
 from loguru import logger
 
 import certificates
@@ -26,4 +27,4 @@ def create_certificate(certificate_date):
 
 
 if __name__ == "__main__":
-    create_certificate(sys.argv[1])
+   print(toml.load("./settings.toml").get('sheets').get('destination'))

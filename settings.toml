@@ -1,0 +1,25 @@
+# [google]
+# SHEET_ID='12Ms6PvBvm326h8BJNlTjNeVzmog9vna1gmaWuzJujjg'
+# SHEET_DATA_RANGE='participantes!A:Z'
+# SHEET_DATA_HEADER='ORDER ID,NAME,EMAIL,TIPO'
+# SHEET_CERT_RANGE='certificados!A:Z'
+# SHEET_CERT_HEADER='NOME,EMAIL,CERTIFICADO'
+# DRIVE_FOLDER_CERT_ID='1wRSAWJg0PHNEjHCrXewMGMqMvcieqsxq'
+
+[google]
+json_key_path='./key.json'
+
+[sheets]
+
+[sheets.source]
+id='12Ms6PvBvm326h8BJNlTjNeVzmog9vna1gmaWuzJujjg'
+range='source'
+header=['id','name','email']
+
+[sheets.destination]
+id='12Ms6PvBvm326h8BJNlTjNeVzmog9vna1gmaWuzJujjg'
+range='destination'
+
+drive.destination='1wRSAWJg0PHNEjHCrXewMGMqMvcieqsxq'
+
+fieds_values=sheets.source.id

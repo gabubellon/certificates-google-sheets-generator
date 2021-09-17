@@ -1,0 +1,16 @@
+# [google]
+# SHEET_ID='12Ms6PvBvm326h8BJNlTjNeVzmog9vna1gmaWuzJujjg'
+# SHEET_DATA_RANGE='participantes!A:Z'
+# SHEET_DATA_HEADER='ORDER ID,NAME,EMAIL,TIPO'
+# SHEET_CERT_RANGE='certificados!A:Z'
+# SHEET_CERT_HEADER='NOME,EMAIL,CERTIFICADO'
+# DRIVE_FOLDER_CERT_ID='1wRSAWJg0PHNEjHCrXewMGMqMvcieqsxq'
+
+
+[google]
+json_key_path='./key.json'
+
+[sheets.attends]
+range='attends'
+header=['NOME','EMAIL','CERTIFICADO']
+
