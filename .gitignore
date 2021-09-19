@@ -141,7 +141,8 @@ cython_debug/
 key.json
 
 .vscode/
-
-certificates/
-
+output/
 .DS_Store
+
+talk.toml
+certificates.toml

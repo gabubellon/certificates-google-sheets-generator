@@ -1,16 +1,13 @@
+import io
 import os
 import socket
+import tempfile
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from loguru import logger
 
-from settings import (DRIVE_FOLDER_CERT_ID, GOOGLE_SERVICE_ACCOUNT,
-                      SHEET_CERT_HEADER, SHEET_CERT_RANGE, SHEET_DATA_HEADER,
-                      SHEET_DATA_RANGE, SHEET_ID)
-
-SERVICE_ACCOUNT_FILE = "key.json"
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive",
@@ -19,84 +16,151 @@ SCOPES = [
 ]
 
 
-def read_sheets():
-    socket.setdefaulttimeout(600)  # set timeout to 10 minutes
+class GoogleAPI:
+    def __init__(self, settings, timeout=600):
+        self.settings = settings
+        self.credentials = self.load_credentials()
+        self.build_source_spreadsheet()
+        self.build_destination_spreadsheet()
+        self.build_destination_drive()
+        socket.setdefaulttimeout(timeout)  # set timeout to 10 minutes
 
-    logger.info("Creating Google Connection")
+    def get_settings(self, setting, default=None):
+        return self.settings.get(setting, default)
 
-    credentials = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES
-    )
-    service = build("sheets", "v4", credentials=credentials)
+    def load_credentials(self):
+        return service_account.Credentials.from_service_account_file(
+            self.get_settings("json_key_path", "./key.json"), scopes=SCOPES
+        )
 
-    logger.info("Reading Google Sheets Data")
-    sheet = service.spreadsheets()
-    result = (
-        sheet.values().get(spreadsheetId=SHEET_ID, range=SHEET_DATA_RANGE).execute()
-    )
+    # build("sheets", "v4", credentials=credentials)
+    def build_service(self, type, version):
+        return build(type, version, credentials=self.credentials)
 
-    logger.info("Returning Sheets Data")
-    values = result.get("values", [])
-    return [dict(zip(SHEET_DATA_HEADER, item)) for item in values[1:]]
+    def build_source_spreadsheet(self):
+        self.source_id = self.get_settings("sheets").get("source").get("id")
+        self.source_range = self.get_settings("sheets").get("source").get("range")
+        self.source_fields = self.get_settings("sheets").get("source").get("fields")
 
+    def build_destination_spreadsheet(self):
+        self.destination_id = self.get_settings("sheets").get("destination").get("id")
+        self.destination_range = (
+            self.get_settings("sheets").get("destination").get("range")
+        )
 
-def write_on_sheets(cert_lists):
-    socket.setdefaulttimeout(600)  # set timeout to 10 minutes
+    def build_destination_drive(self):
+        self.drive_id = self.get_settings("drive").get("destination").get("id")
+        self.remove_local = (
+            self.get_settings("drive").get("destination").get("remove_local", False)
+        )
 
-    logger.info("Creating Google Connection")
+    def build_spreadsheet_header(self, to_destination=False):
+        if to_destination:
+            return [
+                field.get("id")
+                for field in self.source_fields
+                if field.get("to_destination", True)
+            ]
+        return [field.get("id") for field in self.source_fields]
 
-    credentials = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES
-    )
-    service = build("sheets", "v4", credentials=credentials)
+    def read_spreadsheet(self, spreadsheet_id, spreadsheet_range, spreadsheet_header):
+        sheet = self.build_service("sheets", "v4").spreadsheets()
+        result = (
+            sheet.values()
+            .get(spreadsheetId=spreadsheet_id, range=spreadsheet_range)
+            .execute()
+        )
 
-    logger.info(f"Cleanning Sheets")
-    service.spreadsheets().values().clear(
-        spreadsheetId=SHEET_ID, range=SHEET_CERT_RANGE, body={}
-    ).execute()
+        values = result.get("values", [])
+        data = [dict(zip(spreadsheet_header, item)) for item in values[1:]]
 
-    cert_lists.insert(0, SHEET_CERT_HEADER)
+        for field in self.source_fields:
+            if field.get("file_from_drive"):
+                for item in data:
+                    url = item.get(field.get("id"))
+                    local_file = self.load_from_drive(url.split("id=")[1])
+                    item[field.get("id")] = local_file
+        print(data)
+        return data
 
-    logger.info(f"Update Sheets..")
-    service.spreadsheets().values().update(
-        spreadsheetId=SHEET_ID,
-        valueInputOption="RAW",
-        range=SHEET_CERT_RANGE,
-        body=dict(majorDimension="ROWS", values=cert_lists),
-    ).execute()
+    def read_source_spreadsheet(self):
+        logger.info("reading Source Spreadsheet...")
+        return self.read_spreadsheet(
+            self.source_id, self.source_range, self.build_spreadsheet_header()
+        )
 
-    logger.info(f"Sheets Updated.")
+    def write_spreadsheet(self, spreadsheet_id, spreadsheet_range, values):
+        sheet = self.build_service("sheets", "v4").spreadsheets()
 
+        sheet.values().clear(
+            spreadsheetId=spreadsheet_id, range=spreadsheet_range, body={}
+        ).execute()
+        headers = self.build_spreadsheet_header(to_destination=True) + list(
+            set(list(values[0].keys())) - set(self.build_spreadsheet_header())
+        )
 
-def save_file_drive(file_path):
-    socket.setdefaulttimeout(600)  # set timeout to 10 minutes
-    logger.info("Creating Google Connection")
+        data = [[item.get(header) for header in headers] for item in values]
+        data.insert(0, headers)
 
-    credentials = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES
-    )
+        sheet.values().update(
+            spreadsheetId=spreadsheet_id,
+            valueInputOption="RAW",
+            range=spreadsheet_range,
+            body=dict(majorDimension="ROWS", values=data),
+        ).execute()
 
-    logger.info("Saving File on Google Drive")
-    service = build("drive", "v3", credentials=credentials)
-    file_metadata = {
-        "name": os.path.basename(file_path),
-        "parents": [DRIVE_FOLDER_CERT_ID],
-    }
-    files = service.files()
-    media = MediaFileUpload(file_path, resumable=True)
-    file = files.create(body=file_metadata, media_body=media, fields="id").execute()
+    def write_destination_spreadsheet(self, values):
+        logger.info("writing on destination spreadsheet...")
+        return self.write_spreadsheet(
+            self.destination_id, self.destination_range, values
+        )
 
-    request_body = {"role": "reader", "type": "anyone"}
+    def save_to_drive(self, file_path):
+        logger.info("saving on destination drive...")
+        service = self.build_service("drive", "v3")
+        file_metadata = {
+            "name": os.path.basename(file_path),
+            "parents": [self.drive_id],
+        }
 
-    logger.info("Change File Permission")
-    response_permission = (
-        service.permissions().create(fileId=file.get("id"), body=request_body).execute()
-    )
+        media = MediaFileUpload(file_path, resumable=True)
+        file = (
+            service.files()
+            .create(body=file_metadata, media_body=media, fields="id")
+            .execute()
+        )
 
-    response_share_link = (
-        service.files().get(fileId=file.get("id"), fields="webViewLink").execute()
-    )
-    
-    os.remove(file_path)
-    logger.info("Returning File Link")
-    return response_share_link.get("webViewLink")
+        request_body = {"role": "reader", "type": "anyone"}
+
+        response_permission = (
+            service.permissions()
+            .create(fileId=file.get("id"), body=request_body)
+            .execute()
+        )
+
+        response_share_link = (
+            service.files().get(fileId=file.get("id"), fields="webViewLink").execute()
+        )
+
+        if self.remove_local:
+            os.remove(file_path)
+
+        return response_share_link.get("webViewLink")
+
+    def load_from_drive(self, file_id):
+        logger.info("loading from drive...")
+        files = self.build_service("drive", "v3").files()
+
+        # https://drive.google.com/open?id=1UjAD4ZQzouFPB_m64RplH2lnVPjqrbZL
+        file_name = f"./temp/{next(tempfile._get_candidate_names())}.png"
+        request = files.get_media(fileId=file_id)
+        fh = io.FileIO(file_name, mode="wb")
+        downloader = MediaIoBaseDownload(fh, request)
+        done = False
+        while done is False:
+            (
+                status,
+                done,
+            ) = downloader.next_chunk()
+
+        return file_name

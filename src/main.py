@@ -1,30 +1,33 @@
-import sys
+import argparse
 
-import toml
 from loguru import logger
+from reportlab.graphics import renderPDF, renderPM
 
-import certificates
-import google_api
+from art import Art
+from google_api import GoogleAPI
+from settings import Settings
 
-
-def create_certificate(certificate_date):
-    logger.info(f"Getting data to certificates")
-    values = google_api.read_sheets()
-    cert_lists = []
-
-    for item in values:
-        try:
-            name = " ".join([name.capitalize() for name in item.get("NAME").split()])
-            email = item.get("EMAIL")
-            file_name = certificates.create(name, certificate_date)
-            file_url = google_api.save_file_drive(file_name)
-            cert_lists.append([name, email, file_url])
-        except:
-            logger.info(f"Error or generate certificate")
-        
-
-    google_api.write_on_sheets(cert_lists)
-
+parser = argparse.ArgumentParser(description="Creating arts to use on events")
+parser.add_argument(
+    "-s",
+    "--settings",
+    type=str,
+    help="toml file with settings parameters",
+    default="./settings.toml",
+    dest="settings",
+)
 
 if __name__ == "__main__":
-   print(toml.load("./settings.toml").get('sheets').get('destination'))
+    args = parser.parse_args()
+    toml_settings = Settings()
+    toml_settings.load_settings(args.settings)
+    GOOGLE = toml_settings.get_setting("google")
+    IMAGE = toml_settings.get_setting("image")
+
+    gapi = GoogleAPI(GOOGLE)
+    data = gapi.read_source_spreadsheet()
+    for item in data:
+        art = Art(IMAGE)
+        item["url"] = gapi.save_to_drive(art.create(item))
+        del art
+    gapi.write_destination_spreadsheet(data)
