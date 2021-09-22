@@ -4,6 +4,7 @@ Returns:
 """
 import os
 from datetime import datetime
+from inspect import formatargvalues
 
 from loguru import logger
 from PIL import Image, ImageDraw, ImageFont
@@ -31,18 +32,18 @@ class Art:
         logger.info("loadding art...")
         return self.get_settings("fields", None)
 
-    def create(self, values):
+    def create(self,values,draw_grid=False):
         logger.info("creating art...")
         for field in self.get_settings("fields", None):
-            self.execute(field, values)
+            self.execute(field, values,draw_grid)
         return self.save(values)
 
-    def execute(self, field, values):
+    def execute(self, field, values,draw_grid=False):
         draw = Draw(self.art, field.get("settings"))
         item = self.get_item(values, field.get("source_id"), field)
         if item:
             if field.get("type") == "text":
-                draw.write_text(item)
+                draw.write_text(item,draw_grid)
             elif field.get("type") == "image":
                 draw.draw_image(item)
 

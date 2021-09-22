@@ -17,13 +17,14 @@ SCOPES = [
 
 
 class GoogleAPI:
-    def __init__(self, settings, timeout=600):
+    def __init__(self, settings,limit=None, timeout=600):
         self.settings = settings
         self.credentials = self.load_credentials()
         self.build_source_spreadsheet()
         self.build_destination_spreadsheet()
         self.build_destination_drive()
-        socket.setdefaulttimeout(timeout)  # set timeout to 10 minutes
+        self.limit = limit
+        socket.setdefaulttimeout(timeout if timeout else 600)  # set timeout to 10 minutes
 
     def get_settings(self, setting, default=None):
         return self.settings.get(setting, default)
@@ -72,15 +73,19 @@ class GoogleAPI:
         )
 
         values = result.get("values", [])
+
         data = [dict(zip(spreadsheet_header, item)) for item in values[1:]]
 
+        if self.limit:
+            print(self.limit)
+            data = data[0:self.limit+1]
+            
         for field in self.source_fields:
             if field.get("file_from_drive"):
                 for item in data:
                     url = item.get(field.get("id"))
                     local_file = self.load_from_drive(url.split("id=")[1])
                     item[field.get("id")] = local_file
-        print(data)
         return data
 
     def read_source_spreadsheet(self):

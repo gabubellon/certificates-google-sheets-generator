@@ -28,7 +28,7 @@ class Draw:
         self.text = None
         self.im = None
 
-    def write_text(self, text):
+    def write_text(self, text,draw_grid=False):
         logger.info("writing text...")
         self.font = self.build_font()
         self.text = self.split_text(text)
@@ -37,6 +37,11 @@ class Draw:
             text=self.text,
             **self.build_settings(),
         )
+        if draw_grid:
+            for x in range(0,self.image.size[0],50):
+                ImageDraw.Draw(self.image).line((x,0,x,self.image.size[0]),width=5,fill="#8a817e")
+            for y in range(0,self.image.size[1],50):
+                ImageDraw.Draw(self.image).line((0,y,self.image.size[1],y),width=5,fill="#8a817e")
 
     def draw_image(self, image_path):
         logger.info("drawing image...")

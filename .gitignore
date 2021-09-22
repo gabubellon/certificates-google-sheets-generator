@@ -146,3 +146,5 @@ output/
 
 talk.toml
 certificates.toml
+temp/
+assets/imgs/
