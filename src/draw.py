@@ -45,8 +45,9 @@ class Draw:
 
     def draw_image(self, image_path):
         logger.info("drawing image...")
+        self.xy = self.parse_xy()
         self.im = self.load_im(image_path)
-        self.image.paste(self.im, box=(597, 94), mask=self.load_mask())
+        self.image.paste(self.im, box=self.xy, mask=self.load_mask())
 
     def load_im(self, image_path):
         logger.info("loading image to copy...")

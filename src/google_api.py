@@ -77,8 +77,7 @@ class GoogleAPI:
         data = [dict(zip(spreadsheet_header, item)) for item in values[1:]]
 
         if self.limit:
-            print(self.limit)
-            data = data[0:self.limit+1]
+            data = data[0:self.limit]
             
         for field in self.source_fields:
             if field.get("file_from_drive"):
@@ -158,6 +157,9 @@ class GoogleAPI:
 
         # https://drive.google.com/open?id=1UjAD4ZQzouFPB_m64RplH2lnVPjqrbZL
         file_name = f"./temp/{next(tempfile._get_candidate_names())}.png"
+
+        os.makedirs("./temp/", exist_ok=True)
+
         request = files.get_media(fileId=file_id)
         fh = io.FileIO(file_name, mode="wb")
         downloader = MediaIoBaseDownload(fh, request)

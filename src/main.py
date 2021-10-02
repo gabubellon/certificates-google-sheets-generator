@@ -1,4 +1,6 @@
 import argparse
+import os
+import shutil
 
 from loguru import logger
 from reportlab.graphics import renderPDF, renderPM
@@ -26,17 +28,27 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-l",
+    "-lim",
     "--limit",
     type=int,
     help="limit data to result",
     dest="limit",
 )
 
+parser.add_argument(
+    "-lo"
+    "--local",
+    action='store_true',
+    help="Run only local and dont upload files",
+    dest="local",
+)
+
+
 if __name__ == "__main__":
     args = parser.parse_args()
     toml_settings = Settings()
     toml_settings.load_settings(args.settings)
+   
     
     GOOGLE = toml_settings.get_setting("google")
     IMAGE = toml_settings.get_setting("image")
@@ -45,6 +57,12 @@ if __name__ == "__main__":
     data = gapi.read_source_spreadsheet()
     for item in data:
         art = Art(IMAGE)
-        item["url"] = gapi.save_to_drive(art.create(item,args.grid))
+        local_art = art.create(item,args.grid)
+        if not args.local:
+            item["url"] = gapi.save_to_drive(local_art)
         del art
-    gapi.write_destination_spreadsheet(data)
+    if not args.local:
+        gapi.write_destination_spreadsheet(data)
+
+    if os.path.exists("./temp"):
+        shutil.rmtree("./temp")
