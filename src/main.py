@@ -3,7 +3,6 @@ import os
 import shutil
 
 from loguru import logger
-from reportlab.graphics import renderPDF, renderPM
 
 from art import Art
 from google_api import GoogleAPI
