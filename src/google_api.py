@@ -79,9 +79,11 @@ class GoogleAPI:
         if self.limit:
             data = data[0:self.limit]
             
+       
         for field in self.source_fields:
             if field.get("file_from_drive"):
                 for item in data:
+                    logger.info(field.get("id"))
                     url = item.get(field.get("id"))
                     local_file = self.load_from_drive(url.split("id=")[1])
                     item[field.get("id")] = local_file
