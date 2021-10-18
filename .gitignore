@@ -143,8 +143,4 @@ key.json
 .vscode/
 output/
 .DS_Store
-
-talk.toml
-certificates.toml
 temp/
-assets/imgs/
