@@ -33,8 +33,9 @@ class Draw:
         self.font = self.build_font()
         self.text = self.split_text(text)
         self.xy = self.parse_xy()
+        logger.info(self.text)
         ImageDraw.Draw(self.image).text(
-            text=self.text,
+            text=self.text.encode('utf-8').decode('utf-8'),
             **self.build_settings(),
         )
         if draw_grid:
