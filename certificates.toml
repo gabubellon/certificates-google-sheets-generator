@@ -53,7 +53,7 @@
             [image.fields.settings]
             font.file='./assets/fonts/Sanchez-Regular.ttf'
             font.size=150
-            spacing=10
+            spacigitng=10
             fill="#33d5ac"
             x="center" #[left,center,right,integer]
             y=1000 #[up,center,down,integer]
