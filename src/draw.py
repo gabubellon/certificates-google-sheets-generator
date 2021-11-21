@@ -154,6 +154,7 @@ class Draw:
             return text
 
         full_text = []
+        
         line = ""
         for word in text.split(" "):
             if len(word) + len(line) < limit - 1:
