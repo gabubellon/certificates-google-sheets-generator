@@ -4,8 +4,8 @@
      [google.sheets]
 
         [google.sheets.source]
-            id='1M-koe0XYuYyNpWBMBasT3ph19XhrdcQxRfNeTDoyvoA'
-            range='es_fonte_talks'
+            id='1j8nFvqnvrIOK_inJf1wsmZUqWewQTMP31P8ablGc0CI'
+            range='fonte_es'
 
         [[google.sheets.source.fields]]
             id="nome"
@@ -24,12 +24,12 @@
             to_destination=false
 
         [google.sheets.destination]
-            id='1I6zQsbGgoqz_h8TOCWEp0iySZH9xgHLLy0NH9AVNoLI'
+            id='1j8nFvqnvrIOK_inJf1wsmZUqWewQTMP31P8ablGc0CI'
             range='certificados_es'
 
     [google.drive]
         [google.drive.destination]
-            id='1_GwoBY91zrZInqSnprlY-qSYcDkteWD3'
+            id='1ehog6iX3Yz-BbDmiNMxBcZjo1zRR_uTg'
             remove_local=false
 
 # File to be used to generate art 

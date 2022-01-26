@@ -4,8 +4,8 @@
      [google.sheets]
 
         [google.sheets.source]
-            id='1Eqjb58VZm80Iben9fH0_YSp_w9FDt_Xbit8ZCqBTW1o'
-            range='tutorials'
+            id='1Ra8Eb1hwHsNLIbaOJEGzdXZVOsA8nhNngD9TzLzEqp8'
+            range='fonte'
 
         [[google.sheets.source.fields]]
             id="Timestamp"
@@ -28,12 +28,12 @@
             to_destination=false
 
         [google.sheets.destination]
-            id='1Eqjb58VZm80Iben9fH0_YSp_w9FDt_Xbit8ZCqBTW1o'
+            id='1Ra8Eb1hwHsNLIbaOJEGzdXZVOsA8nhNngD9TzLzEqp8'
             range='certificados'
 
     [google.drive]
         [google.drive.destination]
-            id='1ufYgsdHWkQcPM_40_BU_w6xf1vPhARTg'
+            id='1TvTTgDP5ePAvKhY1VrM8wa7vfHVZNlMH'
             remove_local=false
 
 # File to be used to generate art 
