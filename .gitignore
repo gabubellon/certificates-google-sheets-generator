@@ -141,7 +141,6 @@ cython_debug/
 key.json
 
 .vscode/
-
-certificates/
-
+output/
 .DS_Store
+temp/git

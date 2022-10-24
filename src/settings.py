@@ -1,12 +1,13 @@
-from decouple import Csv, config
+import toml
+from loguru import logger
 
-GOOGLE_SERVICE_ACCOUNT = config("GOOGLE_SERVICE_ACCOUNT")
-SHEET_ID = config("SHEET_ID")
 
-SHEET_DATA_RANGE = config("SHEET_DATA_RANGE")
-SHEET_DATA_HEADER = config("SHEET_DATA_HEADER", cast=Csv())
+class Settings:
+    def __init__(self):
+        pass
 
-SHEET_CERT_RANGE = config("SHEET_CERT_RANGE")
-SHEET_CERT_HEADER = config("SHEET_CERT_HEADER", cast=Csv())
+    def load_settings(self, file_path):
+        self.settings = toml.load(file_path)
 
-DRIVE_FOLDER_CERT_ID = config("DRIVE_FOLDER_CERT_ID")
+    def get_setting(self, setting):
+        return self.settings.get(setting)

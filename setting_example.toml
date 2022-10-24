@@ -1,0 +1,127 @@
+[google]
+    json_key_path='./key.json'
+
+    [google.sheets]
+
+        [google.sheets.source]
+            id='url_id'
+            range='range'
+
+        [[google.sheets.source.fields]]
+            id="name"
+            to_destination=true
+
+        [[google.sheets.source.fields]]
+            id="photo"
+            to_destination=false
+            file_from_drive=true
+
+        [[google.sheets.source.fields]]
+            id="title"
+            to_destination=true
+
+        [[google.sheets.source.fields]]
+            id="description"
+            to_destination=false
+
+        [google.sheets.destination]
+            id='url_id'
+            range='range'
+
+    [google.drive]
+        [google.drive.destination]
+            id='url_id'
+            remove_local=false
+
+# File to be used to generate art 
+[image]
+    id="talks"
+    path='./assets/imgs/talks.png'
+    size=[1080,1080]
+    file_suffix="talk"
+    fields_prefix=["name"] #sheets.source.fields.ids to use on name {}_{}_file_suffix.file_extension
+    date_on_filename=false
+    local_path='./output'
+
+    [[image.fields]] # fields inside art to be replace by a value
+        id="title"
+        type="text"
+        from_source=true
+        source_id="title"
+        [image.fields.settings]
+            font.file='./assets/fonts/Poppins-Bold.ttf'
+            font.size=30
+            spacing=10
+            fill="#5c1dff"
+            x=66 #[left,center,right,integer]
+            y=790 #[up,center,down,integer]
+            x_margin=100
+            y_margin=0
+            x_limit=28
+
+    [[image.fields]] # fields inside art to be replace by a value
+        id="name"
+        type="text"
+        from_source=true
+        source_id="name"
+        [image.fields.settings]
+            font.file='./assets/fonts/Poppins-Bold.ttf'
+            font.size=38
+            spacing=10
+            fill="#5c1dff"
+            x="left" #[left,center,right,integer]
+            y="up" #[up,center,down,integer]
+            x_margin=200
+            y_margin=100
+            x_limit=35
+
+
+    [[image.fields]] # fields inside art to be replace by a value
+        id="description"
+        type="text"
+        from_source=true
+        source_id="description"
+        [image.fields.settings]
+            font.file='./assets/fonts/Poppins-Medium.ttf'
+            font.size=30
+            spacing=10
+            fill="#5c1dff"
+            x="left" #[left,center,right,integer]
+            y="up" #[up,center,down,integer]
+            x_margin=30
+            y_margin=250
+            x_limit=35
+
+    [[image.fields]] # fields inside art to be replace by a value
+        id="photo"
+        type="image"
+        from_source=true
+        source_id="photo"
+        [image.fields.settings]
+            font.file='./assets/fonts/Poppins-Medium.ttf'
+            font.size=80
+            spacing=10
+            fill="#5c1dff'"
+            x="right" #[left,center,right,integer]
+            y="down" #[up,center,down,integer]
+            x_margin=30
+            y_margin=30
+            size=[750,750]
+            mask='./assets/imgs/mask.png'
+
+    [[image.fields]] # fields inside art to be replace by a value
+        id="date"
+        type="text"
+        from_source=false
+        default_value="2O DE OUTUBRO DE 2021"
+        [image.fields.settings]
+            font.file='./assets/fonts/Sanchez-Regular.ttf'
+            font.size=80
+            spacing=10
+            fill="#33d5ac"
+            x="right" #[left,center,right,integer]
+            y="down" #[up,center,down,integer]
+            x_margin=30
+            y_margin=30
+
+

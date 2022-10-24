@@ -1,0 +1,65 @@
+[google]
+    json_key_path='./key.json'
+
+     [google.sheets]
+
+        [google.sheets.source]
+            id='1qO-lm5VYiz_GW-8QSUUBgHPIO33-b0ZwtkuHRRrffW0'
+            range='participantes'
+
+        [[google.sheets.source.fields]]
+            id="NAME"
+            to_destination=true
+
+        [google.sheets.destination]
+            id='1qO-lm5VYiz_GW-8QSUUBgHPIO33-b0ZwtkuHRRrffW0'
+            range='certificados'
+
+    [google.drive]
+        [google.drive.destination]
+            id='13Zqhb-0Fv-dOQzLb6L5S8vBeLhXSyhGa'
+            remove_local=false
+
+# File to be used to generate art 
+[image]
+    id="certificate"
+    path='./assets/imgs/certificates.png'
+    size=[3508,2480]
+    file_suffix="certificate"
+    fields_prefix=["NAME"] #sheets.source.fields.ids to use on name {}_{}_file_suffix.file_extension
+    date_on_filename=true
+    local_path='./output'
+
+    [[image.fields]] # fields inside art to be replace by a value
+        id="date"
+        type="text"
+        from_source=false
+        default_value="2O DE OUTUBRO DE 2021"
+        [image.fields.settings]
+            font.file='./assets/fonts/Sanchez-Regular.ttf'
+            font.size=80
+            spacing=10
+            fill="#33d5ac"
+            x="right" #[left,center,right,integer]
+            y="down" #[up,center,down,integer]
+            x_margin=30
+            y_margin=30
+
+    [[image.fields]]
+        id="name"
+        type="text"
+        from_source=true
+        source_id="NAME"
+            [image.fields.settings]
+            font.file='./assets/fonts/Sanchez-Regular.ttf'
+            font.size=150
+            spacigitng=10
+            fill="#33d5ac"
+            x="center" #[left,center,right,integer]
+            y=1000 #[up,center,down,integer]
+            x_margin=60
+            y_margin=0
+
+
+
+

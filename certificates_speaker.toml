@@ -1,0 +1,128 @@
+[google]
+    json_key_path='./key.json'
+
+     [google.sheets]
+
+        [google.sheets.source]
+            id='1j8nFvqnvrIOK_inJf1wsmZUqWewQTMP31P8ablGc0CI'
+            range='fonte_pt'
+
+        [[google.sheets.source.fields]]
+            id="nome"
+            to_destination=true
+
+        [[google.sheets.source.fields]]
+            id="email"
+            to_destination=true
+
+        [[google.sheets.source.fields]]
+            id="titulo"
+            to_destination=false
+
+        [[google.sheets.source.fields]]
+            id="data"
+            to_destination=false
+
+        [google.sheets.destination]
+            id='1j8nFvqnvrIOK_inJf1wsmZUqWewQTMP31P8ablGc0CI'
+            range='certificados_pt'
+
+    [google.drive]
+        [google.drive.destination]
+            id='1ehog6iX3Yz-BbDmiNMxBcZjo1zRR_uTg'
+            remove_local=false
+
+# File to be used to generate art 
+[image]
+    id="certificate"
+    path='./assets/imgs/certificate_generic.png'
+    size=[3508,2480]
+    file_suffix="certificate_speaker"
+    fields_prefix=["nome"] #sheets.source.fields.ids to use on name {}_{}_file_suffix.file_extension
+    date_on_filename=false
+    local_path='./output'
+
+    [[image.fields]] # fields inside art to be replace by a value
+        id="texto"
+        type="text"
+        from_source=false
+        default_value="MINISTROU NA PYTHON BRASIL 2021 EM "
+        [image.fields.settings]
+            font.file='./assets/fonts/Sanchez-Regular.ttf'
+            font.size=80
+            spacing=10
+            fill="#1c456f"
+            x=1200 #[left,center,right,integer]
+            y=1200 #[up,center,down,integer]
+            x_margin=0
+            y_margin=0
+            x_limit=45
+          
+            
+
+    [[image.fields]] # fields inside art to be replace by a value
+        id="date"
+        type="text"
+        from_source=false
+        default_value="20 DE OUTUBRO DE 2021"
+        [image.fields.settings]
+            font.file='./assets/fonts/Sanchez-Regular.ttf'
+            font.size=80
+            spacing=10
+            fill="#33d5ac"
+            x="right" #[left,center,right,integer]
+            y="down" #[up,center,down,integer]
+            x_margin=30
+            y_margin=30
+
+    [[image.fields]]
+        id="nome"
+        type="text"
+        from_source=true
+        source_id="nome"
+            [image.fields.settings]
+            font.file='./assets/fonts/Sanchez-Regular.ttf'
+            font.size=150
+            spacigitng=10
+            fill="#33d5ac"
+            x=1000 #[left,center,right,integer]
+            y=1000 #[up,center,down,integer]
+            x_margin=0
+            y_margin=0
+
+
+    [[image.fields]]
+        id="titulo"
+        type="text"
+        from_source=true
+        source_id="titulo"
+            [image.fields.settings]
+            font.file='./assets/fonts/Sanchez-Regular.ttf'
+            font.size=80
+            spacigitng=10
+            fill="#33d5ac"
+            x=1200 #[left,center,right,integer]
+            y=1500 #[up,center,down,integer]
+            x_margin=0
+            y_margin=0
+            x_limit=45
+
+
+    [[image.fields]]
+        id="data"
+        type="text"
+        from_source=true
+        source_id="data"
+            [image.fields.settings]
+            font.file='./assets/fonts/Sanchez-Regular.ttf'
+            font.size=80
+            spacing=10
+            fill="#1c456f"
+            x=1950 #[left,center,right,integer]
+            y=1290 #[up,center,down,integer]
+            x_margin=0
+            y_margin=0
+
+
+
+
