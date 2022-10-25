@@ -1,0 +1,69 @@
+[google]
+    json_key_path='./key.json'
+
+     [google.sheets]
+
+        [google.sheets.source]
+            id='1hT7ml5tOwb-vY9W3mPASxNAQauRzlOXf9ysJ5tzGe_Y'
+            range='participantes'
+
+        [[google.sheets.source.fields]]
+            id="NAME"
+            to_destination=true
+
+        [[google.sheets.source.fields]]
+            id="EMAIL"
+            to_destination=true
+
+        [google.sheets.destination]
+            id='1hT7ml5tOwb-vY9W3mPASxNAQauRzlOXf9ysJ5tzGe_Y'
+            range='certificados'
+
+    [google.drive]
+        [google.drive.destination]
+            id='1LBZuvG0SskkdeT_DUNJbUpD9bTyttQMG'
+            remove_local=false
+
+# File to be used to generate art 
+[image]
+    id="certificate"
+    path='./assets/imgs/2022/certificate_event.jpg'
+    size=[3508,2480]
+    file_suffix="certificate"
+    fields_prefix=["NAME"] #sheets.source.fields.ids to use on name {}_{}_file_suffix.file_extension
+    date_on_filename=false
+    local_path='./output'
+
+    [[image.fields]] # fields inside art to be replace by a value
+        id="date"
+        type="text"
+        from_source=false
+        default_value="24 DE OUTUBRO DE 2022"
+        [image.fields.settings]
+            font.file='./assets/fonts/Manrope-Bold.ttf'
+            font.size=80
+            spacing=10
+            fill="#047F4D"
+            x="center" #[left,center,right,integer]
+            y="down" #[up,center,down,integer]
+            x_margin=30
+            y_margin=200
+
+    [[image.fields]]
+        id="name"
+        type="text"
+        from_source=true
+        source_id="NAME"
+            [image.fields.settings]
+            font.file='./assets/fonts/Manrope-Bold.ttf'
+            font.size=150
+            spacigitng=10
+            fill="#047F4D"
+            x="center" #[left,center,right,integer]
+            y=1300 #[up,center,down,integer]
+            x_margin=60
+            y_margin=0
+
+
+
+
