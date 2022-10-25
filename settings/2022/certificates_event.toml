@@ -40,10 +40,10 @@
         from_source=false
         default_value="24 DE OUTUBRO DE 2022"
         [image.fields.settings]
-            font.file='./assets/fonts/Sanchez-Regular.ttf'
+            font.file='./assets/fonts/Manrope-Bold.ttf'
             font.size=80
             spacing=10
-            fill="#33d5ac"
+            fill="#047F4D"
             x="center" #[left,center,right,integer]
             y="down" #[up,center,down,integer]
             x_margin=30
@@ -55,10 +55,10 @@
         from_source=true
         source_id="NAME"
             [image.fields.settings]
-            font.file='./assets/fonts/Sanchez-Regular.ttf'
+            font.file='./assets/fonts/Manrope-Bold.ttf'
             font.size=150
             spacigitng=10
-            fill="#33d5ac"
+            fill="#047F4D"
             x="center" #[left,center,right,integer]
             y=1300 #[up,center,down,integer]
             x_margin=60
