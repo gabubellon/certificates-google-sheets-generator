@@ -174,4 +174,5 @@ class Draw:
             "fill": self.get_setting("fill", "#000000"),
             "font": self.font,
             "spacing": self.get_setting("spacing", 10),
+            "language": "pt-BR"
         }
